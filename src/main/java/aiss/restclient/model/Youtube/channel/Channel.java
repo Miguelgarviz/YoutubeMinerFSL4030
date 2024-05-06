@@ -25,7 +25,9 @@ public class Channel {
     }
 
     @JsonProperty("videos")
-    public List<VideoSnippet> getVideos(){ return videos; }
+    public List<VideoSnippet> getVideos() { 
+        return videos; 
+    }
 
     @JsonProperty("videos")
     public void setVideos(List<VideoSnippet> videos) {
