@@ -3,8 +3,10 @@ package aiss.restclient.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import aiss.restclient.model.caption.CaptionSearch;
@@ -47,7 +49,15 @@ public class YoutubeService {
 
     public CommentSearch getComments(String token, String part, String videoId, String maxResults) {
         String uri = String.format("https://www.googleapis.com/youtube/v3/commentThreads?key=%s&part=%s&videoId=%s&maxResults=%s", token, part, videoId, maxResults);
-        ResponseEntity<CommentSearch> entity = restTemplate.getForEntity(uri, CommentSearch.class);
-        return entity.getBody();
+        CommentSearch res = new CommentSearch();
+        try{
+            ResponseEntity<CommentSearch> entity = restTemplate.exchange(uri,HttpMethod.GET,null, CommentSearch.class);
+            if(entity.getBody().getItems()!= null){
+                res = entity.getBody();
+            }
+        }catch (HttpClientErrorException.Forbidden e){
+            if(e.getStatusCode().isSameCodeAs(HttpStatus.NOT_FOUND)) throw new HttpClientErrorException(HttpStatus.FORBIDDEN);
+        }
+        return res;
     }
 }
