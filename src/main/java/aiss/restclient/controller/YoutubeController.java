@@ -36,7 +36,7 @@ public class YoutubeController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/channels/{id}")
-    public List<Channel> post(@PathVariable String id) {
+    public void post(@PathVariable String id) {
         String token = "AIzaSyBMFf0FXcHTGGud3hXJeFKD6bEksvPNcMw";
         String part = "snippet,contentDetails,statistics";
         ChannelSearch channelSearch = youtubeService.getChannelWithId(token, part, id);
@@ -86,7 +86,6 @@ public class YoutubeController {
             Channel VideoChannel = restTemplate.postForObject("http://localhost:8080/videominer/channels", newChannel, Channel.class);
             channels.add(VideoChannel);
         }
-        return channels;
     }
 
 }
